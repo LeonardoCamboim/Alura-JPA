@@ -1,5 +1,6 @@
 package br.com.alura.loja.teste;
 
+import br.com.alura.loja.dao.CategoriaDao;
 import br.com.alura.loja.dao.ProdutoDao;
 import br.com.alura.loja.modelo.Categoria;
 import br.com.alura.loja.modelo.Produto;
@@ -14,15 +15,33 @@ public class CadastroDeProduto {
 
     public static void main(String[] args) {
 
-        Produto celular = new Produto("Xiami redmi", "Smartphone", new BigDecimal(800), Categoria.CELULARES);
+        Categoria categoria = new Categoria("CELULAR");
+
+        Produto celular = new Produto("Xiami redmi", "Smartphone", new BigDecimal(800), categoria);
 
         EntityManager em = JPAUtil.getEntityManager();
-        ProdutoDao dao = new ProdutoDao(em);
+        ProdutoDao produtoDao = new ProdutoDao(em);
+        CategoriaDao categoriaDao = new CategoriaDao(em);
 
         em.getTransaction().begin();
-        dao.cadastrar(celular);
-        em.getTransaction().commit();
-        em.close();
+
+        categoriaDao.cadastrar(categoria);
+        produtoDao.cadastrar(celular);
+
+        celular.setNome("Teste");
+
+        em.flush();
+        em.clear();
+
+        celular = produtoDao.atualizar(celular);
+
+        celular.setNome("1234");
+        em.flush();
+        em.clear();
+
+        produtoDao.remove(celular);
+
+        em.flush();
 
     }
 }
