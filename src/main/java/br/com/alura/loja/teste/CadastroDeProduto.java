@@ -10,11 +10,26 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.math.BigDecimal;
+import java.util.List;
 
 public class CadastroDeProduto {
 
     public static void main(String[] args) {
 
+        cadastrarProduto();
+        EntityManager em = JPAUtil.getEntityManager();
+        ProdutoDao produtoDao = new ProdutoDao(em);
+        CategoriaDao categoriaDao = new CategoriaDao(em);
+
+        List<Produto> todos = produtoDao.buscarTodos();
+        Produto p = produtoDao.buscarPorId(1L);
+
+        System.out.println(p);
+        System.out.println(todos);
+
+    }
+
+    private static void cadastrarProduto() {
         Categoria categoria = new Categoria("CELULAR");
 
         Produto celular = new Produto("Xiami redmi", "Smartphone", new BigDecimal(800), categoria);
@@ -31,17 +46,7 @@ public class CadastroDeProduto {
         celular.setNome("Teste");
 
         em.flush();
-        em.clear();
-
-        celular = produtoDao.atualizar(celular);
-
-        celular.setNome("1234");
-        em.flush();
-        em.clear();
-
-        produtoDao.remove(celular);
-
-        em.flush();
+        em.close();
 
     }
 }

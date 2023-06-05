@@ -80,4 +80,9 @@ public class Produto {
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Produto id: %d", id);
+    }
 }
